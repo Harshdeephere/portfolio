@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyApp 3.1</title>
+<style>
+  /* ---------- Global ---------- */
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    /* Classic teal desktop background */
+    background: #008080;
+    font-family: "MS Sans Serif", "Tahoma", "Geneva", sans-serif;
+    font-size: 13px;
+    color: #000;
+    cursor: default;
+    user-select: none;
+  }
+
+  /* ---------- Bevel helpers ---------- */
+  /* Outset: light top/left, dark bottom/right */
+  .bevel-out {
+    border-top: 2px solid #fff;
+    border-left: 2px solid #fff;
+    border-right: 2px solid #404040;
+    border-bottom: 2px solid #404040;
+    box-shadow:
+      inset 1px 1px 0 #dfdfdf,
+      inset -1px -1px 0 #808080;
+  }
+  /* Inset: dark top/left, light bottom/right */
+  .bevel-in {
+    border-top: 2px solid #404040;
+    border-left: 2px solid #404040;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    box-shadow:
+      inset 1px 1px 0 #808080,
+      inset -1px -1px 0 #dfdfdf;
+  }
+
+  /* ---------- Window ---------- */
+  .window {
+    position: absolute;
+    top: 60px;
+    left: 80px;
+    width: 420px;
+    background: #c0c0c0;
+    padding: 3px;
+  }
+
+  /* Title bar */
+  .titlebar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff;
+    font-weight: bold;
+    padding: 3px 4px;
+    cursor: move;
+  }
+  .titlebar .icon {
+    width: 16px; height: 16px;
+    background: #fff;
+    display: inline-block;
+  }
+  .titlebar .title { flex: 1; }
+  .titlebar .btn {
+    width: 18px; height: 16px;
+    background: #c0c0c0;
+    color: #000;
+    font-size: 11px;
+    line-height: 14px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  /* Menu bar */
+  .menubar {
+    display: flex;
+    padding: 2px 2px;
+    background: #c0c0c0;
+  }
+  .menubar span {
+    padding: 2px 8px;
+    cursor: pointer;
+  }
+  .menubar span:hover { background: #000080; color: #fff; }
+
+  /* Body */
+  .body {
+    padding: 10px;
+  }
+
+  /* Chunky 3D button */
+  button {
+    font-family: inherit;
+    font-size: 13px;
+    background: #c0c0c0;
+    padding: 5px 14px;
+    margin-right: 8px;
+    cursor: pointer;
+  }
+  button:active {
+    border-top: 2px solid #404040;
+    border-left: 2px solid #404040;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    padding: 6px 13px 4px 15px; /* shift text down for pressed look */
+  }
+
+  /* Sunken text field */
+  .field {
+    width: 100%;
+    padding: 4px;
+    background: #fff;
+    font-family: inherit;
+    margin-bottom: 12px;
+  }
+
+  /* Status bar */
+  .statusbar {
+    display: flex;
+    gap: 4px;
+    padding: 3px;
+  }
+  .statusbar div {
+    flex: 1;
+    padding: 3px 6px;
+    font-size: 12px;
+  }
+
+  /* Desktop icons */
+  .icon-area {
+    position: absolute;
+    top: 10px; left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .desktop-icon {
+    width: 70px;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000;
+    cursor: pointer;
+  }
+  .desktop-icon .glyph {
+    width: 32px; height: 32px;
+    margin: 0 auto 4px;
+    background: #c0c0c0;
+  }
+  .desktop-icon:hover .label { background: #000080; }
+</style>
+</head>
+<body>
+
+  <!-- Main window -->
+  <div class="window bevel-out" id="win">
+    <div class="titlebar">
+      <span class="icon"></span>
+      <span class="title">Harshdeep's Portfolio</span>
+      <span class="btn bevel-out">_</span>
+      <span class="btn bevel-out">□</span>
+      <span class="btn bevel-out">×</span>
+    </div>
+
+    <div class="menubar">
+      <span>File</span><span>Edit</span><span>View</span><span>Help</span>
+    </div>
+
+    <div class="body">
+      <p>Whoopsie <b>You forgot the way!</b>!<br>The page you are looking for does not exist.</p>
+
+      <input class="field bevel-in" type="text" placeholder="Type here..." readonly>
+
+      <button class="bevel-out" onclick="window.location.href='index.html'">Home page</button>   
+      <button class="bevel-out">Cancel</button>
+      <button class="bevel-out">Help</button>
+    </div>
+
+    <div class="statusbar">
+      <div class="bevel-in">Here's nothing but nostalgia.</div>
+      <div class="bevel-in">What should i put here?</div>
+    </div>  
+  </div>
+
+<script>
+  // Simple drag-to-move for the window
+  const win = document.getElementById('win');
+  const bar = win.querySelector('.titlebar');
+  let dragging = false, offX, offY;
+
+  bar.addEventListener('mousedown', e => {
+    dragging = true;
+    offX = e.clientX - win.offsetLeft;
+    offY = e.clientY - win.offsetTop;
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    win.style.left = (e.clientX - offX) + 'px';
+    win.style.top  = (e.clientY - offY) + 'px';
+  });
+  document.addEventListener('mouseup', () => dragging = false);
+</script>
+</body>
+</html>   
